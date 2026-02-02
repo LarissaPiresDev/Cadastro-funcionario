@@ -5,7 +5,7 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-app.use('./funcionarios', funcionarioRoutes);
+app.use('/funcionarios', funcionarioRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

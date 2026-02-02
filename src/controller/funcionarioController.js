@@ -10,9 +10,23 @@ export const listarFuncionarios = (req, res)=>{
 
 //CREATE
 export const inserirFuncionario = (req, res)=>{
-    const slq = "INSERIR INTO funcionarios (nome, cargo, salario) VALUES (?,?,?)";
-    db.query(slq, [nome, cargo, salario], err =>{
-        if(err) return res.satus(500).json({erro: 'Erro ao inserir funcionário :/'});
+    const {nome, cargo, salario} = req.body;
+    const sql = "INSERT INTO funcionarios (nome, cargo, salario) VALUES (?,?,?)";
+    db.query(sql, [nome, cargo, salario], err =>{
+        if(err) return res.status(500).json({erro: 'Erro ao inserir funcionário :/'});
         res.json({mensagem: 'Funcionário inserido com sucesso! '});
-    })
+    });
+};
+
+//UPDATE
+export const atualizarFuncionario = (req, res)=>{
+        const {id} = req.params;
+        const {nome, cargo, salario} = req.body;
+
+        const sql = 'UPDATE funcionarios SET nome=?, cargo=?, salario=? WHERE id=?';
+        db.query(sql, [nome, cargo, salario, id], err =>{
+            if(err) return res.status(500).json({erro: 'Erro ao atualizar funcionário :/'});
+        res.json({mensagem: 'Funcionário atualizado com sucesso! :)'});
+    });
+
 }
