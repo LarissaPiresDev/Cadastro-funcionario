@@ -5,7 +5,7 @@ async function carregarFuncionarios(params) {
     const response = await fetch (API_URL);
     const funcionarios = await response.json();
 
-    const tabela = ducument.getElementById('tabela-funcionarios');
+    const tabela = document.getElementById('tabela-funcionarios');
     tabela.innerHTML = '';
 //Percorre a lista de funcionários e cria uma linha para cada um na tabela  
     funcionarios.forEach(func =>{
@@ -27,8 +27,46 @@ async function carregarFuncionarios(params) {
 
 document.getElementById('funcionarioForm').addEventListener('submit', async ()=>{
     e.preventDefault();
-    const id = ducument.getElementById('id').value;
-    const nome = ducument.getElementById('nome').value;
-    const cargo = ducument.getElementById('cargo').value;
-    const salario = ducument.getElementById('salario').value;
+    const id = document.getElementById('id').value;
+    const nome = document.getElementById('nome').value;
+    const cargo = document.getElementById('cargo').value;
+    const salario = document.getElementById('salario').value;
+
+    //tratamento de dados para criar um objeto funcionario com os dados do formulário
+    const funcionario = { nome, cargo, salario};
+    if(id){
+        await fetch(`${API_URL}/%{id}`, {
+            method:'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(funcionario)
+        });
+    //se o id existir ele atualiza
+    }else{
+        await fetch(API_URL, {
+            method:'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(funcionario)
+        });
+    }
+    //limpa o formulário 
+    e.target.reset();
+    document.getElementById('id').value = '';
+    
 })
+
+//função para editar funcionario
+function editarFuncionario(id, nome, cargo, salario){
+    document.getElementById('id').value = id;
+    document.getElementById('nome').value = nome;
+    document.getElementById('cargo').value = cargo;
+    document.getElementById('salario').value = salario;
+}
+
+//função para excluir funcionario
+async function excluirFuncionario(id){
+    if(confirm('Tem certeza que deseja excluir este funcionário?')){
+        await fetch(`${API_URL}/${id}`,{method:'DELETE'});
+        carregarFuncionarios();
+    }
+}
+carregarFuncionarios();
